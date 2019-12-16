@@ -1,6 +1,7 @@
 # 如何快速找到多个字典中的公共键(key)
 
 from random import randint, sample
+from functools import reduce
 import time
 
 # 数据准备
@@ -21,14 +22,21 @@ print(key_list)
 
 # 方法一的dict是已经了三个，我们需要一个对dict个数是未知的 更通用的 寻找多个字典中的公共键的方法。
 # 方法二： map（） all() 列表解析
-dict_list = [dict1, dict2, dict3]
+dict_list = [dict1, dict2, dict3]  # 以下编程假设列表长度未知
 start = time.time()
 key_list = [key for key in dict_list[0] if all(map(lambda t: key in t, dict_list[1:]))]
 end = time.time()
 print((end - start) * 1000)
 print(key_list)
 
+# 方法三： 用集合。 map() reduce()
+dict_list = [dict1, dict2, dict3]  # 以下编程假设列表长度未知
+start = time.time()
 
+key_list = reduce(lambda a, b: a & b, map(lambda dic: dic.keys(), dict_list))
+end = time.time()
+print((end - start) * 1000)
+print(key_list)
 
 # random.sample的用法： 在给点的样例集中随机选取指定次数的样例，形成列表。
 # a = sample('ABCD', 2)
@@ -54,6 +62,14 @@ print(key_list)
 # [1, 4, 9]
 
 
+# reduce()函数的用法：reduce() 函数会对参数序列中元素进行累积。
+# 函数将一个数据集合（链表，元组等）中的所有数据进行下列操作：
+#       用传给 reduce 中的函数 function（有两个参数）先对集合中的第 1、2 个元素进行操作，得到的结果再与第三个数据用 function 函数运算，最后得到一个结果。
+# li = [1,2,3,4]
+# reduce(lambda a,b: a+b, li)
+# 10
+
+
 # all()函数的用法：
 # all() 函数用于判断给定的可迭代参数 iterable 中的所有元素是否都为 TRUE，如果是返回 True，否则返回 False。
 # 元素除了是 0、空、None、False 外都算 True。
@@ -67,5 +83,3 @@ print(key_list)
 # True
 # all(())
 # True
-
-
